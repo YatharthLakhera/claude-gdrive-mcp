@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "custom-gdrive-mcp"
+version = "0.1.0"
+description = "Slimmed Google Drive MCP server (fork of taylorwilsdon/google_workspace_mcp) with a Claude.ai-compatible tool surface (search_files, list_recent_files, get_file_metadata, read_file_content, download_file_content, create_file) and a mime-aware create_file that handles binary uploads correctly."
+readme = "README.md"
+keywords = ["mcp", "google-drive", "drive", "model-context-protocol"]
+license = "MIT"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.115.12",
+    "fastmcp>=3.2.4",
+    "google-api-python-client>=2.168.0",
+    "google-auth-httplib2>=0.2.0",
+    "google-auth-oauthlib>=1.2.2",
+    "httpx>=0.28.1",
+    "urllib3>=2.7.0",
+    "py-key-value-aio>=0.3.0",
+    "pyjwt>=2.12.0",
+    "python-dotenv>=1.1.0",
+    "cryptography>=45.0.0",
+    "defusedxml>=0.7.1",
+    "pypdf>=6.10.2",
+    "pytz>=2026.1.post1",
+    "markdown-it-py>=3.0.0",
+]
+
+[project.scripts]
+custom-gdrive-mcp = "main:main"
+
+[project.optional-dependencies]
+gcs = ["google-cloud-storage>=2.18.0"]
+disk = ["py-key-value-aio[filetree]>=0.3.0"]
+valkey = ["py-key-value-aio[valkey]>=0.3.0"]
+
+[tool.setuptools]
+py-modules = ["main"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = ["tests*", "docs*", "build", "dist"]
