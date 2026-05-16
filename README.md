@@ -111,10 +111,17 @@ WORKSPACE_MCP_TRANSPORT=streamable-http
 WORKSPACE_MCP_PORT=8000
 WORKSPACE_MCP_HOST=0.0.0.0
 
+# Externally-reachable URL — used to build the OAuth callback redirect.
+# For plain localhost dev, point this at the same host:port the server binds to.
+# Tunnel/Railway setups override this with their public HTTPS URL.
+WORKSPACE_EXTERNAL_URL=http://localhost:8000
+
 # Auth mode
 MCP_ENABLE_OAUTH21=true
 WORKSPACE_MCP_STATELESS_MODE=true
 ```
+
+> If `WORKSPACE_EXTERNAL_URL` is unset the OAuth callback URL is derived from request headers and can drift from what's registered in GCP, causing `redirect_uri_mismatch`. Always set it explicitly to the URL where this MCP is reachable.
 
 For stdio mode (e.g. Claude Desktop), see the alternative recipe under [Run locally](#run-locally) below.
 
@@ -223,6 +230,15 @@ In claude.ai → **Settings → Connectors → Add custom connector**:
 
 Click **Connect**. The OAuth flow opens in a new tab; authorize with the Google account you added under GCP Console → OAuth consent screen → Test users.
 
+**Whitelist `googleapis.com` in Claude.ai's network egress allowlist.** Claude's analysis sandbox can't reach arbitrary hosts by default, so any tool call that streams file bytes from the sandbox to Google Drive (e.g. uploading a generated xlsx via `create_file`) silently fails until you allow it. In claude.ai → **Settings → Capabilities** → enable **Allow network egress**, leave the dropdown on **Package managers only**, and add these under **Additional allowed domains**:
+
+- `*.googleapis.com`
+- `googleapis.com`
+
+![Claude egress allowlist with *.googleapis.com and googleapis.com added](docs/img/claude-egress-allowlist.png)
+
+Without this, the connector itself works (Claude → MCP → Drive is fine), but any *code execution* step that pushes bytes outbound to Google will be blocked by the sandbox firewall, not by the MCP.
+
 **Free ngrok URLs change on each restart.** Each new URL means re-editing `.env` *and* re-adding the redirect URI in GCP. Use a static domain (paid plan) or Cloudflare Tunnel for a stable setup.
 
 ### Docker
@@ -290,6 +306,8 @@ For a text round-trip (markdown, no base64), pass `mimeType="text/markdown"` and
 | `Drive API has not been used in project ... before or it is disabled` | Step 2a was skipped. The server prints a direct enable link in the error message. |
 | `Port 8000 already in use` | Change `WORKSPACE_MCP_PORT` and update the redirect URI in both `.env` and the GCP OAuth client. |
 | `--single-user is incompatible with OAuth 2.1 mode` | You set both `MCP_ENABLE_OAUTH21=true` and passed `--single-user`. Pick one mode per the recipes above. |
+| `create_file` succeeds from a direct MCP client but fails when Claude runs it from code execution | Claude's sandbox egress is blocking the outbound call to `*.googleapis.com`. Whitelist it under claude.ai → Settings → Capabilities → Network access. |
+| OAuth callback redirects to the wrong host (e.g. `0.0.0.0:8000` or a Railway internal hostname) | `WORKSPACE_EXTERNAL_URL` isn't set. Point it at the URL the MCP is actually reachable on (`http://localhost:8000` locally, the public HTTPS URL in prod). |
 
 ---
 
