@@ -32,6 +32,7 @@ client_secret.json
 mcp_server_debug.log
 ngrok-*.log
 *.log
+*.pid
 store_creds/
 
 # ---- Local development files -------------------------------------------
