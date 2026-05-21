@@ -110,7 +110,11 @@ logger = logging.getLogger(__name__)
 
 configure_file_logging()
 
-SERVICE_MODULES = {"drive": "gdrive.drive_tools"}
+SERVICE_MODULES = {
+    "drive": "gdrive.drive_tools",
+    "sheets": "gsheets.sheets_tools",
+    "slides": "gslides.slides_tools",
+}
 
 
 def safe_print(text):

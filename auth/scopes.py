@@ -22,10 +22,22 @@ DRIVE_SCOPE = "https://www.googleapis.com/auth/drive"
 DRIVE_READONLY_SCOPE = "https://www.googleapis.com/auth/drive.readonly"
 DRIVE_FILE_SCOPE = "https://www.googleapis.com/auth/drive.file"
 
+# Google Sheets scopes — required to create native charts via
+# spreadsheets.batchUpdate (addChart) and read them back via spreadsheets.get.
+SHEETS_SCOPE = "https://www.googleapis.com/auth/spreadsheets"
+SHEETS_READONLY_SCOPE = "https://www.googleapis.com/auth/spreadsheets.readonly"
+
+# Google Slides scopes — required to embed LINKED Sheets charts via
+# presentations.batchUpdate (createSheetsChart) and verify via presentations.get.
+PRESENTATIONS_SCOPE = "https://www.googleapis.com/auth/presentations"
+PRESENTATIONS_READONLY_SCOPE = "https://www.googleapis.com/auth/presentations.readonly"
+
 # Google scope hierarchy: broader scopes that implicitly cover narrower ones.
 # See https://developers.google.com/drive/api/guides/api-specific-auth.
 SCOPE_HIERARCHY = {
     DRIVE_SCOPE: {DRIVE_READONLY_SCOPE, DRIVE_FILE_SCOPE},
+    SHEETS_SCOPE: {SHEETS_READONLY_SCOPE},
+    PRESENTATIONS_SCOPE: {PRESENTATIONS_READONLY_SCOPE},
 }
 
 
@@ -59,15 +71,21 @@ PROTOCOL_AUTH_SCOPES = [USERINFO_EMAIL_SCOPE, OPENID_SCOPE]
 
 # Service-specific scope groups
 DRIVE_SCOPES = [DRIVE_SCOPE, DRIVE_READONLY_SCOPE, DRIVE_FILE_SCOPE]
+SHEETS_SCOPES = [SHEETS_SCOPE, SHEETS_READONLY_SCOPE]
+SLIDES_SCOPES = [PRESENTATIONS_SCOPE, PRESENTATIONS_READONLY_SCOPE]
 
 # Tool-to-scopes mapping
 TOOL_SCOPES_MAP = {
     "drive": DRIVE_SCOPES,
+    "sheets": SHEETS_SCOPES,
+    "slides": SLIDES_SCOPES,
 }
 
 # Tool-to-read-only-scopes mapping
 TOOL_READONLY_SCOPES_MAP = {
     "drive": [DRIVE_READONLY_SCOPE],
+    "sheets": [SHEETS_READONLY_SCOPE],
+    "slides": [PRESENTATIONS_READONLY_SCOPE],
 }
 
 
