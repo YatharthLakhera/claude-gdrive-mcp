@@ -31,6 +31,10 @@ from auth.scopes import (
     DRIVE_SCOPE,
     DRIVE_READONLY_SCOPE,
     DRIVE_FILE_SCOPE,
+    SHEETS_SCOPE,
+    SHEETS_READONLY_SCOPE,
+    PRESENTATIONS_SCOPE,
+    PRESENTATIONS_READONLY_SCOPE,
     has_required_scopes,
 )
 
@@ -484,6 +488,8 @@ def _remove_user_email_arg_from_docstring(docstring: str) -> str:
 # Service configuration mapping
 SERVICE_CONFIGS = {
     "drive": {"service": "drive", "version": "v3"},
+    "sheets": {"service": "sheets", "version": "v4"},
+    "slides": {"service": "slides", "version": "v1"},
 }
 
 
@@ -492,6 +498,10 @@ SCOPE_GROUPS = {
     "drive": DRIVE_SCOPE,
     "drive_read": DRIVE_READONLY_SCOPE,
     "drive_file": DRIVE_FILE_SCOPE,
+    "sheets": SHEETS_SCOPE,
+    "sheets_read": SHEETS_READONLY_SCOPE,
+    "slides": PRESENTATIONS_SCOPE,
+    "slides_read": PRESENTATIONS_READONLY_SCOPE,
 }
 
 
